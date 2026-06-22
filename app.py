@@ -220,6 +220,41 @@ def profile():
         user=user
     )
 
+# =========================
+# PROFILE
+# =========================
+@app.route("/change-password", methods=["GET", "POST"])
+def change_password():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = User.query.get(session["user_id"])
+
+    if request.method == "POST":
+
+        old_password = request.form["old_password"]
+
+        new_password = request.form["new_password"]
+
+        if check_password_hash(
+            user.password,
+            old_password
+        ):
+
+            user.password = generate_password_hash(
+                new_password
+            )
+
+            db.session.commit()
+
+            return redirect("/profile")
+
+        return "Current password is incorrect"
+
+    return render_template(
+        "change_password.html"
+    )
 
 # =========================
 # LOGOUT

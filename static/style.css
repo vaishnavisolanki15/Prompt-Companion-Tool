@@ -632,3 +632,47 @@ footer{
 
     background:#b91c1c;
 }
+
+.profile-container form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    margin-top:30px;
+}
+
+.profile-container input{
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1f2937;
+
+    color:white;
+
+    outline:none;
+}
+
+.profile-container button{
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#6366f1;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:600;
+}
+
