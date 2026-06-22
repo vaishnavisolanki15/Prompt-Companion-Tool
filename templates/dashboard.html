@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Companion AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+
+
+
+<div class="history-panel">
+
+    <div class="sidebar-logo">
+        <i class="fa-solid fa-robot"></i>
+        <span>Prompt Companion</span>
+    </div>
+
+    <button class="new-chat-btn">
+        <i class="fa-solid fa-plus"></i>
+        New Chat
+    </button>
+
+    <div class="sidebar-menu">
+
+        <div class="menu-item">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search Chats
+        </div>
+
+        <div class="menu-item">
+            <i class="fa-solid fa-book"></i>
+            Library
+        </div>
+
+        <div class="menu-item">
+            <i class="fa-solid fa-folder"></i>
+            Projects
+        </div>
+
+        <div class="menu-item">
+            <i class="fa-solid fa-layer-group"></i>
+            Categories
+        </div>
+
+        <div class="menu-item">
+            <i class="fa-solid fa-chart-column"></i>
+            Analytics
+        </div>
+
+        <div class="menu-item">
+            <i class="fa-solid fa-star"></i>
+            Favorites
+        </div>
+
+        <div class="menu-item">
+            <i class="fa-solid fa-gear"></i>
+            Settings
+        </div>
+
+    </div>
+
+    <div class="recent-title">
+        Recent
+    </div>
+
+    <div class="chat-history">
+
+        {% for item in prompts %}
+
+        <div class="history-item"
+             onclick="loadChat('{{ item.id }}')">
+
+            <i class="fa-regular fa-message"></i>
+
+            <span>
+                {{ item.prompt_text[:30] }}
+            </span>
+
+<button
+class="delete-chat"
+onclick="deleteChat(event, '{{ item.id }}')">
+
+🗑
+
+</button>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- ======================
+     MAIN CONTENT
+====================== -->
+
+<div class="main-content">
+
+    <!-- TOP BAR -->
+
+    <div class="top-bar">
+
+        <div class="welcome-user">
+
+            Welcome,
+            <strong>{{ full_name }}</strong>
+
+        </div>
+
+        <div class="profile">
+
+            <a href="/profile">
+
+            <div class="profile-circle">
+
+                {{ username[0]|upper }}
+
+            </div>
+
+            </a>
+        </div>
+
+        </div>
+
+
+    <!-- HERO SECTION -->
+
+    <div class="hero-section">
+
+        <h1>
+            What would you like to create today?
+        </h1>
+
+        <p>
+            Prompt Companion helps you generate ideas,
+            solve coding problems, improve writing,
+            and boost productivity.
+        </p>
+
+    </div>
+
+
+    <!-- PROMPT BOX -->
+
+    <form action="/generate"
+          method="POST"
+          class="prompt-form">
+
+        <textarea
+            id="promptBox"
+            name="prompt"
+            placeholder="Ask anything..."
+            maxlength="2000"
+            required></textarea>
+
+        <div class="prompt-footer">
+
+            <span id="charCount">
+                0 / 2000
+            </span>
+
+            <button type="submit">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+                Send
+
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- EXAMPLE CARDS -->
+
+    <div class="example-section">
+
+        <div class="example-card">
+
+            <h4>Python Help</h4>
+
+            <p>
+                Explain Python loops with examples
+            </p>
+
+        </div>
+
+        <div class="example-card">
+
+            <h4>Startup Idea</h4>
+
+            <p>
+                Generate a business idea for students
+            </p>
+
+        </div>
+
+        <div class="example-card">
+
+            <h4>Story Writing</h4>
+
+            <p>
+                Write a short sci-fi story
+            </p>
+
+        </div>
+
+        <div class="example-card">
+
+            <h4>Summarize</h4>
+
+            <p>
+                Summarize a long article
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI RESPONSES -->
+
+    <div class="response-section">
+
+        {% for item in prompts %}
+<div class="response-card chat-content"
+     id="chat-{{ item.id }}"
+     style="display:none;">
+
+            <div class="response-header">
+
+                <span class="badge">
+
+                    {{ item.category }}
+
+                </span>
+
+            </div>
+
+            <div class="user-prompt">
+
+                <strong>You:</strong>
+
+                <p>
+                    {{ item.prompt_text }}
+                </p>
+
+            </div>
+
+            <div class="ai-response">
+
+    <strong>Prompt Companion AI</strong>
+
+    <div class="markdown-content">
+        {{ item.ai_response }}
+    </div>
+
+</div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        Prompt Companion AI • Internship Project •
+        Powered by Groq API
+
+    </footer>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

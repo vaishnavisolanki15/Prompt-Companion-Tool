@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Profile</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static',
+          filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="profile-container">
+
+    <div class="profile-header">
+
+        <div class="profile-avatar">
+            {{ user.name[0]|upper }}
+        </div>
+
+        <h1>{{ user.name }}</h1>
+
+        <p>@{{ user.username }}</p>
+
+    </div>
+
+    <div class="profile-details">
+
+        <div class="profile-row">
+
+            <label>Name</label>
+
+            <span>{{ user.name }}</span>
+
+        </div>
+
+        <div class="profile-row">
+
+            <label>Username</label>
+
+            <span>{{ user.username }}</span>
+
+        </div>
+
+        <div class="profile-row">
+
+            <label>Email</label>
+
+            <span>{{ user.email }}</span>
+
+        </div>
+
+        <div class="profile-row">
+
+            <label>Password</label>
+
+            <span>**************</span>
+
+        </div>
+
+    </div>
+
+    <div class="profile-actions">
+
+        <a href="#" class="profile-btn">
+            Edit Profile
+        </a>
+
+        <a href="#" class="profile-btn">
+            Change Password
+        </a>
+
+        <a href="/logout"
+           class="profile-btn logout-btn">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
