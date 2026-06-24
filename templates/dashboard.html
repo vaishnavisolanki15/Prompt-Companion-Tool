@@ -31,15 +31,16 @@
 
     <div class="sidebar-menu">
 
-        <div class="menu-item">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            Search Chats
-        </div>
+        <div class="search-container">
 
-        <div class="menu-item">
-            <i class="fa-solid fa-book"></i>
-            Library
-        </div>
+    <i class="fa-solid fa-magnifying-glass"></i>
+
+    <input
+        type="text"
+        id="searchChat"
+        placeholder="Search chats...">
+
+    </div>
 
         <div class="menu-item">
             <i class="fa-solid fa-folder"></i>
@@ -52,27 +53,16 @@
         </div>
 
         <div class="menu-item">
-            <i class="fa-solid fa-chart-column"></i>
-            Analytics
-        </div>
-
-        <div class="menu-item">
-            <i class="fa-solid fa-star"></i>
-            Favorites
-        </div>
-
-        <div class="menu-item">
             <i class="fa-solid fa-gear"></i>
             Settings
         </div>
 
+        <div class="recent-heading">
+            Recent Chats
+        </div>
     </div>
 
-    <div class="recent-title">
-        Recent
-    </div>
-
-    <div class="chat-history">
+<div class="chat-history">
 
         {% for item in prompts %}
 
@@ -82,14 +72,14 @@
             <i class="fa-regular fa-message"></i>
 
             <span>
-                {{ item.prompt_text[:30] }}
+                {{ item.prompt_text[:20] }}
             </span>
 
 <button
 class="delete-chat"
 onclick="deleteChat(event, '{{ item.id }}')">
 
-🗑
+<i class="fa-solid fa-trash"></i>
 
 </button>
 
@@ -157,6 +147,11 @@ onclick="deleteChat(event, '{{ item.id }}')">
     <form action="/generate"
           method="POST"
           class="prompt-form">
+
+        <input
+            type="hidden"
+            id="editChatId"
+            name="edit_chat_id">
 
         <textarea
             id="promptBox"
@@ -252,20 +247,60 @@ onclick="deleteChat(event, '{{ item.id }}')">
 
             <div class="user-prompt">
 
-                <strong>You:</strong>
+    <div class="prompt-header">
 
-                <p>
-                    {{ item.prompt_text }}
-                </p>
+        <strong>You</strong>
 
-            </div>
+        <div class="prompt-actions">
+
+<button
+type="button"
+onclick="copyText(`{{ item.ai_response }}`)">
+
+    <i class="fa-regular fa-copy"></i>
+
+</button>
+
+            <button
+type="button"
+onclick="editPrompt(`{{ item.prompt_text }}`, '{{ item.id }}')">
+
+    <i class="fa-solid fa-pen"></i>
+
+</button>
+
+</button>
+
+        </div>
+
+    </div>
+
+    <p>
+        {{ item.prompt_text }}
+    </p>
+
+</div>
 
             <div class="ai-response">
 
-    <strong>Prompt Companion AI</strong>
+    <div class="response-top">
+
+        <strong>Prompt Companion AI</strong>
+
+        <button
+        onclick="copyText(`{{ item.ai_response }}`)"
+        type="button">
+
+            <i class="fa-regular fa-copy"></i>
+
+        </button>
+
+    </div>
 
     <div class="markdown-content">
+
         {{ item.ai_response }}
+
     </div>
 
 </div>

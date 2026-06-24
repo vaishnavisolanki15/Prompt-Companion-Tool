@@ -1,8 +1,13 @@
+/* ==========================================
+   PROMPT COMPANION AI
+   MAIN JAVASCRIPT FILE
+========================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =========================
+    /* ==========================================
        CHARACTER COUNTER
-    ========================= */
+    ========================================== */
 
     const promptBox = document.getElementById("promptBox");
     const charCount = document.getElementById("charCount");
@@ -18,9 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    /* =========================
-       EXAMPLE CARDS
-    ========================= */
+    /* ==========================================
+       EXAMPLE CARDS CLICK
+    ========================================== */
 
     const exampleCards =
         document.querySelectorAll(".example-card");
@@ -40,15 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     `${text.length} / 2000`;
 
                 promptBox.focus();
+
             }
 
         });
 
     });
 
-    /* =========================
+    /* ==========================================
        CTRL + ENTER SUBMIT
-    ========================= */
+    ========================================== */
 
     if (promptBox) {
 
@@ -69,15 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    /* =========================
+    /* ==========================================
        SEARCH CHAT
-    ========================= */
+    ========================================== */
 
-    const searchInput =
-        document.getElementById("searchChat");
-
-    const historyCards =
-        document.querySelectorAll(".history-card");
+    const searchInput = document.getElementById("searchChat");
 
     if (searchInput) {
 
@@ -86,25 +88,27 @@ document.addEventListener("DOMContentLoaded", () => {
             const value =
                 searchInput.value.toLowerCase();
 
-            historyCards.forEach(card => {
+            document
+                .querySelectorAll(".history-item")
+                .forEach(item => {
 
-                const text =
-                    card.innerText.toLowerCase();
+                    const text =
+                        item.innerText.toLowerCase();
 
-                card.style.display =
-                    text.includes(value)
-                    ? "block"
-                    : "none";
+                    item.style.display =
+                        text.includes(value)
+                        ? "flex"
+                        : "none";
 
-            });
+                });
 
         });
 
     }
 
-    /* =========================
-       NEW CHAT
-    ========================= */
+    /* ==========================================
+       NEW CHAT BUTTON
+    ========================================== */
 
     const newChatBtn =
         document.querySelector(".new-chat-btn");
@@ -124,36 +128,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
 
+            document
+                .querySelectorAll(".chat-content")
+                .forEach(chat => {
+
+                    chat.style.display = "none";
+
+                });
+
         });
 
     }
 
-    /* =========================
-       DARK MODE TOGGLE
-    ========================= */
+    /* ==========================================
+       PREVENT DOUBLE SUBMIT
+    ========================================== */
 
-    const moonIcon =
-        document.querySelector(".fa-moon");
+    const promptForm =
+        document.querySelector(".prompt-form");
 
-    if (moonIcon) {
+    if (promptForm) {
 
-        moonIcon.parentElement.addEventListener(
-            "click",
-            () => {
+        promptForm.addEventListener("submit", () => {
 
-                document.body.classList.toggle("light-mode");
-
-                localStorage.setItem(
-                    "theme",
-                    document.body.classList.contains("light-mode")
-                    ? "light"
-                    : "dark"
+            const sendBtn =
+                document.querySelector(
+                    ".prompt-footer button"
                 );
 
-            }
-        );
+            sendBtn.disabled = true;
+
+            sendBtn.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+
+        });
 
     }
+
+    /* ==========================================
+       LOAD SAVED THEME
+    ========================================== */
 
     const savedTheme =
         localStorage.getItem("theme");
@@ -166,37 +180,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-document.querySelectorAll(".markdown-content")
+
+/* ==========================================
+   MARKDOWN RENDERING
+========================================== */
+
+document
+.querySelectorAll(".markdown-content")
 .forEach(element => {
 
     element.innerHTML =
         marked.parse(element.textContent);
 
 });
-function togglePassword(inputId, icon){
 
-    const input =
-    document.getElementById(inputId);
 
-    if(input.type === "password"){
+/* ==========================================
+   LOAD CHAT
+========================================== */
 
-        input.type = "text";
-
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-
-    }
-    else{
-
-        input.type = "password";
-
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
-
-    }
-
-}
-function loadChat(chatId){
+function loadChat(chatId) {
 
     document
     .querySelectorAll(".chat-content")
@@ -207,64 +210,163 @@ function loadChat(chatId){
     });
 
     const selectedChat =
-        document.getElementById("chat-" + chatId);
-
-    if(selectedChat){
-
-        selectedChat.style.display = "block";
-
-    }
-}
-function togglePassword(inputId, element){
-
-    const input =
-    document.getElementById(inputId);
-
-    if(input.type === "password"){
-
-        input.type = "text";
-
-        element.textContent = "🙈";
-
-    }else{
-
-        input.type = "password";
-
-        element.textContent = "👁";
-
-    }
-
-}
-
-const promptForm =
-document.querySelector(".prompt-form");
-
-if(promptForm){
-
-    promptForm.addEventListener("submit", () => {
-
-        const sendBtn =
-        document.querySelector(
-            ".prompt-footer button"
+        document.getElementById(
+            "chat-" + chatId
         );
 
-        sendBtn.disabled = true;
+    if (selectedChat) {
 
-        sendBtn.innerHTML =
-        "Generating...";
+        selectedChat.style.display =
+            "block";
+
+    }
+
+}
+
+
+/* ==========================================
+   DELETE CHAT
+========================================== */
+
+function deleteChat(event, chatId) {
+
+    event.stopPropagation();
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this chat?"
+        );
+
+    if (confirmDelete) {
+
+        window.location.href =
+            "/delete_chat/" + chatId;
+
+    }
+
+}
+
+
+/* ==========================================
+   COPY TEXT
+========================================== */
+
+function copyText(text) {
+
+    navigator.clipboard
+        .writeText(text)
+        .then(() => {
+
+            alert("Copied Successfully");
+
+        });
+
+}
+
+
+/* ==========================================
+   EDIT PROMPT
+========================================== */
+
+function editPrompt(prompt, chatId) {
+
+    const promptBox =
+        document.getElementById("promptBox");
+
+    const editChatId =
+        document.getElementById("editChatId");
+
+    if(promptBox){
+
+        promptBox.value = prompt;
+
+        promptBox.focus();
+
+    }
+
+    if(editChatId){
+
+        editChatId.value = chatId;
+
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+function copyText(text){
+
+    navigator.clipboard.writeText(text)
+    .then(() => {
+
+        alert("Copied Successfully");
+
+    })
+    .catch(err => {
+
+        console.error(err);
 
     });
 
 }
-function deleteChat(event, chatId){
 
-    event.stopPropagation();
 
-    if(confirm("Delete this chat?")){
+/* ==========================================
+   PASSWORD TOGGLE
+========================================== */
 
-        window.location.href =
-        "/delete_chat/" + chatId;
+function togglePassword(inputId, icon) {
+
+    const input =
+        document.getElementById(inputId);
+
+    if (!input) return;
+
+    if (input.type === "password") {
+
+        input.type = "text";
+
+        icon.classList.remove("fa-eye");
+
+        icon.classList.add("fa-eye-slash");
 
     }
+
+    else {
+
+        input.type = "password";
+
+        icon.classList.remove(
+            "fa-eye-slash"
+        );
+
+        icon.classList.add("fa-eye");
+
+    }
+
+}
+
+
+/* ==========================================
+   DARK MODE TOGGLE
+========================================== */
+
+function toggleTheme() {
+
+    document.body.classList.toggle(
+        "light-mode"
+    );
+
+    localStorage.setItem(
+        "theme",
+        document.body.classList.contains(
+            "light-mode"
+        )
+            ? "light"
+            : "dark"
+    );
 
 }

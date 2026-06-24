@@ -158,6 +158,7 @@ def generate():
         return redirect("/login")
 
     prompt_text = request.form["prompt"]
+    edit_chat_id = request.form.get("edit_chat_id")
 
     category = categorize_prompt(
         prompt_text
@@ -168,14 +169,23 @@ def generate():
         category
     )
 
-    record = Prompt(
-        user_id=session["user_id"],
-        prompt_text=prompt_text,
-        category=category,
-        ai_response=ai_response
-    )
+    if edit_chat_id:
+        record = Prompt.query.get(int(edit_chat_id))
 
-    db.session.add(record)
+        if record:
+            record.prompt_text = prompt_text
+            record.category = category
+            record.ai_response = ai_response
+    else:
+        record = Prompt(
+            user_id=session["user_id"],
+            prompt_text=prompt_text,
+            category=category,
+            ai_response=ai_response
+        )
+
+        db.session.add(record)
+
     db.session.commit()
 
     return redirect("/dashboard")
@@ -221,7 +231,7 @@ def profile():
     )
 
 # =========================
-# PROFILE
+# Change-Password 
 # =========================
 @app.route("/change-password", methods=["GET", "POST"])
 def change_password():
@@ -233,9 +243,8 @@ def change_password():
 
     if request.method == "POST":
 
-        old_password = request.form["old_password"]
-
-        new_password = request.form["new_password"]
+        old_password = request.form.get["old_password"]
+        new_password = request.form.get["new_password"]
 
         if check_password_hash(
             user.password,
@@ -254,6 +263,32 @@ def change_password():
 
     return render_template(
         "change_password.html"
+    )
+
+# =========================
+# Edit-Profile
+# =========================
+@app.route("/edit-profile", methods=["GET", "POST"])
+def edit_profile():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user = User.query.get(session["user_id"])
+
+    if request.method == "POST":
+
+        user.name = request.form["name"]
+        user.username = request.form["username"]
+        user.email = request.form["email"]
+
+        db.session.commit()
+
+        return redirect("/profile")
+
+    return render_template(
+        "edit_profile.html",
+        user=user
     )
 
 # =========================
